@@ -6,7 +6,7 @@ import ObjectPath = require("object-path");
 import Exceptions = require("../../Exceptions");
 import { AppConfiguration } from "../../configuration/Configuration";
 import Constants = require("../../../../../shared/constants");
-import { DomainExtractor } from "../../utils/DomainExtractor";
+import { UrlExtractor, UrlComponents } from "../../utils/UrlExtractor";
 import { ServerVariables } from "../../ServerVariables";
 import { MethodCalculator } from "../../authentication/MethodCalculator";
 import { IRequestLogger } from "../../logging/IRequestLogger";
@@ -46,12 +46,11 @@ function verify_inactivity(req: Express.Request,
 }
 
 export default function (req: Express.Request, res: Express.Response,
-  vars: ServerVariables, authSession: AuthenticationSession)
+  vars: ServerVariables, authSession: AuthenticationSession,
+  urlComponents: UrlComponents)
   : BluebirdPromise<{ username: string, groups: string[] }> {
   let username: string;
   let groups: string[];
-  let domain: string;
-  let path: string;
 
   return new BluebirdPromise(function (resolve, reject) {
     username = authSession.userid;
@@ -64,15 +63,11 @@ export default function (req: Express.Request, res: Express.Response,
       return;
     }
 
-    const host = ObjectPath.get<Express.Request, string>(req, "headers.host");
-    path =
-      ObjectPath.get<Express.Request, string>(req, "headers.x-original-uri");
-
-    domain = DomainExtractor.fromHostHeader(host);
     const authenticationMethod =
-      MethodCalculator.compute(vars.config.authentication_methods, domain);
-    vars.logger.debug(req, "domain=%s, path=%s, user=%s, groups=%s", domain,
-      path, username, groups.join(","));
+      MethodCalculator.compute(vars.config.authentication_methods,
+        urlComponents.domain);
+    vars.logger.debug(req, "domain=%s, path=%s, user=%s, groups=%s",
+      urlComponents.domain, urlComponents.path, username, groups.join(","));
 
     if (!authSession.first_factor)
       return reject(new Exceptions.AccessDeniedError(
@@ -87,7 +82,8 @@ export default function (req: Express.Request, res: Express.Response,
     resolve();
   })
     .then(function () {
-      return AccessControl(req, vars, domain, path, username, groups);
+      return AccessControl(req, vars, urlComponents.domain, urlComponents.path,
+        username, groups);
     })
     .then(function () {
       return verify_inactivity(req, authSession,

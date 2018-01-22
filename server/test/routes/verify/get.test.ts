@@ -27,7 +27,7 @@ describe("test /api/verify endpoint", function () {
       redirect: "undefined"
     };
     AuthenticationSessionHandler.reset(req as any);
-    req.headers.host = "secret.example.com";
+    req.headers["x-original-url"] = "https://secret.example.com";
     const s = ServerVariablesMockBuilder.build(false);
     mocks = s.mocks;
     vars = s.variables;
@@ -147,9 +147,9 @@ describe("test /api/verify endpoint", function () {
 
     describe("given user tries to access a single factor endpoint", function () {
       beforeEach(function () {
-        req.headers["host"] = "redirect.url";
+        req.headers["x-original-url"] = "https://mywebsite.com";
         mocks.config.authentication_methods.per_subdomain_methods = {
-          "redirect.url": "single_factor"
+          "mywebsite.com": "single_factor"
         };
       });
 

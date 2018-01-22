@@ -6,6 +6,8 @@ import { ServerVariables } from "../../ServerVariables";
 import GetWithSessionCookieMethod from "./get_session_cookie";
 import GetWithBasicAuthMethod from "./get_basic_auth";
 import Constants = require("../../../../../shared/constants");
+import { UrlExtractor, UrlComponents } from "../../utils/UrlExtractor";
+import ObjectPath = require("object-path");
 
 import { AuthenticationSessionHandler }
   from "../../AuthenticationSessionHandler";
@@ -20,18 +22,21 @@ function verifyWithSelectedMethod(req: Express.Request, res: Express.Response,
   vars: ServerVariables, authSession: AuthenticationSession)
   : () => BluebirdPromise<{ username: string, groups: string[] }> {
   return function () {
+    const originalUrl = ObjectPath.get<Express.Request, string>(
+      req, "headers.x-original-url");
+    const urlComponents = UrlExtractor.fromUrl(originalUrl);
     const authorization: string = "" + req.headers["proxy-authorization"];
     if (authorization && authorization.startsWith("Basic "))
-      return GetWithBasicAuthMethod(req, res, vars, authorization);
-
-    return GetWithSessionCookieMethod(req, res, vars, authSession);
+      return GetWithBasicAuthMethod(req, res, vars, authorization,
+        urlComponents);
+    return GetWithSessionCookieMethod(req, res, vars, authSession,
+      urlComponents);
   };
 }
 
 function setRedirectHeader(req: Express.Request, res: Express.Response) {
   return function () {
-    res.set("Redirect", encodeURIComponent("https://" + req.headers["host"] +
-      req.headers["x-original-uri"]));
+    res.set("Redirect", encodeURIComponent("" + req.headers["x-original-url"]));
     return BluebirdPromise.resolve();
   };
 }

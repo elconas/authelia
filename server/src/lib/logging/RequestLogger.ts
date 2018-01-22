@@ -27,7 +27,7 @@ export class RequestLogger implements IRequestLogger {
   }
 
   private formatMessage(req: Express.Request, message: string) {
-    return Util.format("%s %s", this.formatHeader(req),
+    return Util.format(">>>>> %s %s", this.formatHeader(req),
       this.formatBody(message));
   }
 

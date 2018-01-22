@@ -10,7 +10,7 @@ import Endpoint = require("../../../../../shared/api");
 import ErrorReplies = require("../../ErrorReplies");
 import { AuthenticationSessionHandler } from "../../AuthenticationSessionHandler";
 import Constants = require("../../../../../shared/constants");
-import { DomainExtractor } from "../../utils/DomainExtractor";
+import { UrlExtractor } from "../../utils/UrlExtractor";
 import UserMessages = require("../../../../../shared/UserMessages");
 import { MethodCalculator } from "../../authentication/MethodCalculator";
 import { ServerVariables } from "../../ServerVariables";
@@ -49,11 +49,11 @@ export default function (vars: ServerVariables) {
 
         const emails: string[] = groupsAndEmails.emails;
         const groups: string[] = groupsAndEmails.groups;
-        const redirectHost: string = DomainExtractor.fromUrl(redirectUrl);
+        const domain: string = UrlExtractor.fromUrl(redirectUrl).domain;
         const authMethod = MethodCalculator.compute(
-          vars.config.authentication_methods, redirectHost);
+          vars.config.authentication_methods, domain);
         vars.logger.debug(req, "Authentication method for \"%s\" is \"%s\"",
-          redirectHost, authMethod);
+          domain, authMethod);
 
         if (emails.length > 0)
           authSession.email = emails[0];

@@ -16,7 +16,7 @@ export class GlobalLogger implements IGlobalLogger {
   }
 
   private buildMessage(message: string, ...args: any[]): string {
-    return Util.format("date='%s' message='%s'", new Date(),
+    return Util.format(">>>>> date='%s' message='%s'", new Date(),
       Util.format(message, ...args));
   }
 

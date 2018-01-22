@@ -4,25 +4,21 @@ import ObjectPath = require("object-path");
 import { ServerVariables } from "../../ServerVariables";
 import { AuthenticationSession }
   from "../../../../types/AuthenticationSession";
-import { DomainExtractor } from "../../utils/DomainExtractor";
+import { UrlExtractor, UrlComponents } from "../../utils/UrlExtractor";
 import { MethodCalculator } from "../../authentication/MethodCalculator";
 import AccessControl from "./access_control";
 
 export default function (req: Express.Request, res: Express.Response,
-  vars: ServerVariables, authorizationHeader: string)
+  vars: ServerVariables, authorizationHeader: string,
+  urlComponents: UrlComponents)
   : BluebirdPromise<{ username: string, groups: string[] }> {
   let username: string;
   let groups: string[];
-  let domain: string;
-  let path: string;
 
   return new BluebirdPromise<[string, string]>(function (resolve, reject) {
-    const host = ObjectPath.get<Express.Request, string>(req, "headers.host");
-    domain = DomainExtractor.fromHostHeader(host);
-    path =
-      ObjectPath.get<Express.Request, string>(req, "headers.x-original-uri");
     const authenticationMethod =
-      MethodCalculator.compute(vars.config.authentication_methods, domain);
+      MethodCalculator.compute(vars.config.authentication_methods,
+        urlComponents.domain);
 
     if (authenticationMethod != "single_factor") {
       reject(new Error("This domain is not protected with single factor. " +
@@ -59,7 +55,8 @@ export default function (req: Express.Request, res: Express.Response,
     })
     .then(function (groupsAndEmails) {
       groups = groupsAndEmails.groups;
-      return AccessControl(req, vars, domain, path, username, groups);
+      return AccessControl(req, vars, urlComponents.domain, urlComponents.path,
+        username, groups);
     })
     .then(function () {
       return BluebirdPromise.resolve({
