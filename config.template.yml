@@ -20,7 +20,7 @@ logs_level: debug
 #
 # Note: this parameter is optional. If not provided, user won't
 # be redirected upon successful authentication.
-default_redirection_url: https://home.example.com:8080/
+default_redirection_url: https://home.authelia.elconaslab.de:8080/
 
 # LDAP configuration
 #
@@ -77,7 +77,7 @@ ldap:
 authentication_methods:
   default_method: two_factor
   per_subdomain_methods:
-    single_factor.example.com: single_factor
+    single_factor.authelia.elconaslab.de: single_factor
 
 # Access Control
 #
@@ -120,7 +120,7 @@ access_control:
   # The rules that apply to anyone.
   # The value is a list of rules.
   any:
-    - domain: public.example.com
+    - domain: public.authelia.elconaslab.de
       policy: allow
   
   # Group-based rules. The key is a group name and the value
@@ -128,13 +128,13 @@ access_control:
   groups:
     admin:
       # All resources in all domains
-      - domain: '*.example.com'
+      - domain: '*.authelia.elconaslab.de'
         policy: allow
-      # Except mx2.mail.example.com (it restricts the first rule)
-      - domain: 'mx2.mail.example.com'
+      # Except mx2.mail.authelia.elconaslab.de (it restricts the first rule)
+      - domain: 'mx2.mail.authelia.elconaslab.de'
         policy: deny
     dev:
-      - domain: dev.example.com
+      - domain: dev.authelia.elconaslab.de
         policy: allow
         resources:
           - '^/groups/dev/.*$'
@@ -143,19 +143,19 @@ access_control:
   # is a list of rules.
   users:
     john:
-      - domain: dev.example.com
+      - domain: dev.authelia.elconaslab.de
         policy: allow
         resources:
           - '^/users/john/.*$' 
     harry:
-      - domain: dev.example.com
+      - domain: dev.authelia.elconaslab.de
         policy: allow
         resources:
           - '^/users/harry/.*$'
     bob:
-      - domain: '*.mail.example.com'
+      - domain: '*.mail.authelia.elconaslab.de'
         policy: allow
-      - domain: 'dev.example.com'
+      - domain: 'dev.authelia.elconaslab.de'
         policy: allow
         resources:
           - '^/users/bob/.*$'
@@ -177,7 +177,7 @@ session:
   # The domain to protect.
   # Note: the authenticator must also be in that domain. If empty, the cookie
   # is restricted to the subdomain of the issuer. 
-  domain: example.com
+  domain: authelia.elconaslab.de
   
   # The redis connection details
   redis:
@@ -224,9 +224,9 @@ notifier:
   # Use your email account to send the notifications. You can use an app password.
   # List of valid services can be found here: https://nodemailer.com/smtp/well-known/  
   # email:
-  #   username: user@example.com
+  #   username: user@authelia.elconaslab.de
   #   password: yourpassword
-  #   sender: admin@example.com
+  #   sender: admin@authelia.elconaslab.de
   #   service: gmail
   
   # Use a SMTP server for sending notifications
@@ -236,4 +236,4 @@ notifier:
     secure: false
     host: 'smtp'
     port: 1025
-    sender: admin@example.com
+    sender: admin@authelia.elconaslab.de
