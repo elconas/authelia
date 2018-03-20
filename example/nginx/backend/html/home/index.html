@@ -12,51 +12,51 @@
   one of the following links to test access control powered by Authelia.<br/>
   <ul>
     <li>
-      public.example.com <a href="https://public.example.com:8080/"> / index.html</a>
+      public.authelia.elconaslab.de <a href="https://public.authelia.elconaslab.de:8080/"> / index.html</a>
     </li>
     <li>
-      secret.example.com
+      secret.authelia.elconaslab.de
       <ul>
         <li>Groups
           <ul>
             <li>
-              <a href="https://dev.example.com:8080/groups/admin/secret.html"> / groups / admins / secret.html</a>
+              <a href="https://dev.authelia.elconaslab.de:8080/groups/admin/secret.html"> / groups / admins / secret.html</a>
             </li>
             <li>
-              <a href="https://dev.example.com:8080/groups/dev/secret.html"> / groups / dev / secret.html</a>
+              <a href="https://dev.authelia.elconaslab.de:8080/groups/dev/secret.html"> / groups / dev / secret.html</a>
             </li>
           </ul>
         </li>
         <li>Users
           <ul>
             <li>
-              <a href="https://dev.example.com:8080/users/john/secret.html"> / users / john / secret.html</a>
+              <a href="https://dev.authelia.elconaslab.de:8080/users/john/secret.html"> / users / john / secret.html</a>
             </li>
             <li>
-              <a href="https://dev.example.com:8080/users/harry/secret.html"> / users / harry / secret.html</a>
+              <a href="https://dev.authelia.elconaslab.de:8080/users/harry/secret.html"> / users / harry / secret.html</a>
             </li>
             <li>
-              <a href="https://dev.example.com:8080/users/bob/secret.html"> / users / bob / secret.html</a>
+              <a href="https://dev.authelia.elconaslab.de:8080/users/bob/secret.html"> / users / bob / secret.html</a>
             </li>
           </ul>
         </li>
       </ul>
     </li>
     <li>
-      admin.example.com <a href="https://admin.example.com:8080/secret.html"> / secret.html</a>
+      admin.authelia.elconaslab.de <a href="https://admin.authelia.elconaslab.de:8080/secret.html"> / secret.html</a>
     </li>
     <li>
-      mx1.main.example.com <a href="https://mx1.mail.example.com:8080/secret.html"> / secret.html</a>
+      mx1.main.authelia.elconaslab.de <a href="https://mx1.mail.authelia.elconaslab.de:8080/secret.html"> / secret.html</a>
     </li>
     <li>
-      mx2.main.example.com <a href="https://mx2.mail.example.com:8080/secret.html"> / secret.html</a>
+      mx2.main.authelia.elconaslab.de <a href="https://mx2.mail.authelia.elconaslab.de:8080/secret.html"> / secret.html</a>
     </li>
     <li>
-      single_factor.example.com <a href="https://single_factor.example.com:8080/secret.html"> / secret.html</a>
+      single_factor.authelia.elconaslab.de <a href="https://single_factor.authelia.elconaslab.de:8080/secret.html"> / secret.html</a>
     </li>
   </ul>
 
-  You can also log off by visiting the following <a href="https://login.example.com:8080/logout?redirect=https://home.example.com:8080/">link</a>.
+  You can also log off by visiting the following <a href="https://login.authelia.elconaslab.de:8080/logout?redirect=https://home.authelia.elconaslab.de:8080/">link</a>.
 
   <h1>List of users</h1>
   Here is the list of credentials you can log in with to test access control.<br/>
@@ -84,7 +84,7 @@ default_policy: deny
 # The value is a list of rules.
 
 any:
-  - domain: public.example.com
+  - domain: public.authelia.elconaslab.de
     policy: allow
 
 # Group-based rules. The key is a group name and the value
@@ -93,13 +93,13 @@ any:
 groups:
   admin:
     # All resources in all domains
-    - domain: '*.example.com'
+    - domain: '*.authelia.elconaslab.de'
       policy: allow
-    # Except mx2.mail.example.com (it restricts the first rule)
-    - domain: 'mx2.mail.example.com'
+    # Except mx2.mail.authelia.elconaslab.de (it restricts the first rule)
+    - domain: 'mx2.mail.authelia.elconaslab.de'
       policy: deny
   dev:
-    - domain: dev.example.com
+    - domain: dev.authelia.elconaslab.de
       policy: allow
       resources:
         - '^/groups/dev/.*$'
@@ -109,23 +109,23 @@ groups:
 
 users:
   john:
-    - domain: dev.example.com
+    - domain: dev.authelia.elconaslab.de
       policy: allow
       resources:
         - '^/users/john/.*$' 
   harry:
-    - domain: dev.example.com
+    - domain: dev.authelia.elconaslab.de
       policy: allow
       resources:
         - '^/users/harry/.*$'
   bob:
-    - domain: '*.mail.example.com'
+    - domain: '*.mail.authelia.elconaslab.de'
       policy: allow
-    - domain: 'dev.example.com'
+    - domain: 'dev.authelia.elconaslab.de'
       policy: allow
       resources:
         - '^/users/bob/.*$'
-    - domain: 'dev.example.com'
+    - domain: 'dev.authelia.elconaslab.de'
       policy: allow
       resources:
         - '^/users/harry/.*$'</pre>
